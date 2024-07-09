@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResult> ExceptionHandle(Exception e){
-        log.info("{} ->", e.getMessage());
+        log.info("{} : {}->", e.getClass(), e.getMessage());
         var result = BaseResult.builder()
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .message("알 수 없는 오류가 발생했습니다.")
