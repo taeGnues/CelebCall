@@ -82,6 +82,18 @@ public class FeedController {
     }
 
 
-    // 5. 그룹의 게시글 삭제 기능
+    // 4. 그룹의 게시글 삭제 기능
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteFeed(@PathVariable Long id) {
+        feedService.deleteFeed(id);
+        return ResponseEntity.ok("성공적으로 삭제했습니다.");
+    }
+
+    // 5. 그룹의 게시글 수정 기능
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> updateFeed(@PathVariable Long id, @Valid @RequestBody FeedPostDetailDTO feedPostDetailDTO) {
+        feedService.updateFeed(id, feedPostDetailDTO);
+        return ResponseEntity.ok("성공적으로 수정했습니다.");
+    }
 
 }

@@ -102,4 +102,34 @@ public class FeedService {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "commentCnt"));
         return feedRepository.findAllByGroupName(groupName, pageable).stream().map(FeedDTO::fromEntity).toList();
     }
+
+    /*
+    게시판 글 삭제
+     */
+    @Transactional
+    public void deleteFeed(Long id) {
+        UserVO userVO = authService.getCurrentUserVO();
+        Feed feed = feedRepository.findById(id).orElseThrow(() -> new BaseException(ExceptionCode.NOT_EXISTS_FEED));
+
+        if (!userVO.getUserId().equals(feed.getUser().getId())){
+            throw new BaseException(ExceptionCode.WRONG_ACCESS_AUTHORITY);
+        }
+
+        feedRepository.deleteById(id);
+    }
+
+    /*
+    게시글 수정
+     */
+    @Transactional
+    public void updateFeed(Long id, FeedPostDetailDTO feedPostDetailDTO) {
+        UserVO userVO = authService.getCurrentUserVO();
+        Feed feed = feedRepository.findById(id).orElseThrow(() -> new BaseException(ExceptionCode.NOT_EXISTS_FEED));
+
+        if (!userVO.getUserId().equals(feed.getUser().getId())){
+            throw new BaseException(ExceptionCode.WRONG_ACCESS_AUTHORITY);
+        }
+
+        feed.updateFeed(feedPostDetailDTO);
+    }
 }

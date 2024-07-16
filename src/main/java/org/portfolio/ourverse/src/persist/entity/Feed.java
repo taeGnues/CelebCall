@@ -34,6 +34,11 @@ public class Feed extends BaseEntity{
     private int feedLikeCnt;
     private int commentCnt;
 
+    public void updateFeed(FeedPostDetailDTO feedPostDetailDTO) {
+        this.title = feedPostDetailDTO.getTitle();
+        this.content = feedPostDetailDTO.getContent();
+    }
+
     public static Feed of(FeedPostDetailDTO feedPostDetailDTO, User user) {
         return Feed.builder()
                 .title(feedPostDetailDTO.getTitle())
@@ -45,4 +50,5 @@ public class Feed extends BaseEntity{
                 .commentCnt(0)
                 .build();
     }
+
 }
