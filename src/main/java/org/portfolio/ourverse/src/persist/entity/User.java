@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.AuditOverride;
 import org.portfolio.ourverse.common.constant.Authority;
+import org.portfolio.ourverse.common.constant.GroupName;
 import org.portfolio.ourverse.common.entity.BaseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,7 +34,9 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
     private String name;
     private String nickname;
-    private String groupname;
+
+    @Enumerated(EnumType.STRING)
+    private GroupName groupname;
 
     @Enumerated(EnumType.STRING)
     private Authority role;
@@ -41,5 +44,9 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    public void changeGroupname(GroupName groupname) {
+        this.groupname = groupname;
     }
 }
