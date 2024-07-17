@@ -14,6 +14,7 @@ public enum ExceptionCode {
 
     NOT_EXISTS_USERNAME(HttpStatus.BAD_REQUEST, "존재하지 않는 username입니다."),
     NOT_EXISTS_FEED(HttpStatus.BAD_REQUEST, "존재하지 않는 게시물입니다."),
+    NOT_EXISTS_COMMENT(HttpStatus.BAD_REQUEST, "존재하지 않는 게시물입니다."),
     NOT_AUTHENTICATE(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
     USER_NOT_GROUP(HttpStatus.UNAUTHORIZED, "가입된 GROUP이 없습니다."),
 
