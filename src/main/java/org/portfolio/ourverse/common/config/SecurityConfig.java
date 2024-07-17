@@ -38,6 +38,8 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/v3/**", "/swagger-ui/**").permitAll() // swagger 설정
+                                .requestMatchers("/feed/**").hasAnyRole("FAN", "ARTIST")
+                                .requestMatchers("/group/**").hasAnyRole("FAN", "ARTIST")
                                 .anyRequest().denyAll()
                 ).addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

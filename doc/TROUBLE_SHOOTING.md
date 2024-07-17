@@ -38,6 +38,18 @@ feed_like 에 대해서는 데이터가 많아질 경우를 대비하여 생각�
 4. created_at, modified_at으로 관리. -> 모든 도메인에 추가.
 5. 주요 및 보조 기능으로 정리해서 프로젝트 진행 -> '신고' 기능은 제외해서 플젝 진행하기.
 
+## Fetch Join의 이해
+프록시 객체를 불러오고 사용 시, FetchType.LAZY를 했더라도 getUsername, getId와 같이 직접 접근하게 되면
+프록시 초기화가 발생한다.
+
+즉, 1개의 게시글을 조회할 때, 게시글을 작성한 User의 Username 필드도 필요하다면, 아래와 같은 상황이 발생한다.
+```sql
+select f.id, f.title, f.user_id from feed f ....; -- (1)
+select u.id, u.username, u.email from user u where u.user_id = f.user_id -- (2)
+```
+
+
+https://velog.io/@j3beom/JPA-%ED%94%84%EB%A1%9D%EC%8B%9CProxy-%EA%B8%B0%EB%B3%B8
 
 ## N+1 문제점 
 처음 프로젝트 설계시 게시판 글 조회 시 댓글 목록도 함께 조회를 하고자 하였습니다. 그러자 한번 게시글 조회시 해당 게시글에 작성된 모든 댓글들도 함께 조회가 되었습니다.

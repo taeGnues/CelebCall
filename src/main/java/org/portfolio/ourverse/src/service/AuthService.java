@@ -1,7 +1,9 @@
 package org.portfolio.ourverse.src.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.portfolio.ourverse.common.constant.Auth;
+import org.portfolio.ourverse.common.constant.GroupName;
 import org.portfolio.ourverse.common.exceptions.BaseException;
 import org.portfolio.ourverse.common.exceptions.ExceptionCode;
 import org.portfolio.ourverse.src.model.UserVO;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -109,5 +112,15 @@ public class AuthService implements UserDetailsService {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new BaseException(ExceptionCode.NOT_EXISTS_USERNAME)
         );
+    }
+
+    /*
+    user의 groupname 정보 수정하기.
+     */
+    @Transactional
+    public void updateGroupName(GroupName groupname) {
+        UserVO userVO = getCurrentUserVO();
+        User user = userRepository.findById(userVO.getUserId()).orElseThrow(() -> new BaseException(ExceptionCode.NOT_EXISTS_USERNAME));
+        user.changeGroupname(groupname);
     }
 }
