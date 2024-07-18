@@ -38,7 +38,7 @@ public class CommentService {
 
         // 1. 유저 정보 가져오기.
         User user = userRepository.findById(userVO.getUserId()).orElseThrow(
-                () -> new BaseException(ExceptionCode.DB_NOT_EXISTS_USER)
+                () -> new BaseException(ExceptionCode.NOT_EXISTS_USER)
         );
 
         // 2. feedId로 feed 찾기.
