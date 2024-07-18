@@ -37,7 +37,7 @@ public class FeedService {
         // 1. 현재 로그인한 유저 정보 확인.
         UserVO userVO = authService.getCurrentUserVO();
         User user = userRepository.findById(userVO.getUserId()).orElseThrow(
-                () -> new BaseException(ExceptionCode.DB_NOT_EXISTS_USER)
+                () -> new BaseException(ExceptionCode.NOT_EXISTS_USER)
         );
 
         // 1-1. 현재 유저가 가입된 group이 없다면, 오류 발생.
@@ -59,7 +59,7 @@ public class FeedService {
         // 1. 현재 사용자 정보 가져오기.
         UserVO userVO = authService.getCurrentUserVO();
         User user = userRepository.findById(userVO.getUserId()).orElseThrow(
-                () -> new BaseException(ExceptionCode.DB_NOT_EXISTS_USER)
+                () -> new BaseException(ExceptionCode.NOT_EXISTS_USER)
         );
 
         // 1-1. 현재 유저가 가입된 group이 없다면, 오류 발생.
