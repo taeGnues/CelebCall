@@ -110,9 +110,9 @@
 | 게시글 목록 조회 기능  | 필수 |  O   |
 | 특정 게시글 조회 기능  | 필수 |  O   |
 | 게시글 CRUD      | 필수 |  O   |
-| 댓글 목록 조회 기능   | 필수 |      |
-| 댓글 CRUD       | 필수 |      |
-| 좋아요 기능        | 필수 |      |
+| 댓글 목록 조회 기능   | 필수 |  O   |
+| 댓글 CRUD       | 필수 |  O   |
+| 좋아요 기능        | 필수 |  O   |
 | 신고 기능         | 보조 |      | 
 | 신고 목록 조회 기능   | 보조 |      |
 | 어드민 기능        | 보조 |      |
@@ -140,6 +140,9 @@
   <img alt="java" src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> 
   <img alt="spring" src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
   <img alt="spring security" src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=spring security&logoColor=white">
+  <div></div>
+  <img alt="spring data jpa" src="https://img.shields.io/badge/spring data jpa-000000?style=for-the-badge&logo=spring data jpa&logoColor=white">
+  <img alt="querydsl" src="https://img.shields.io/badge/querydsl-000000?style=for-the-badge&logo=query dsl&logoColor=white">
   <div></div>
   <img alt="elastic search" src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">
   <img alt="redis" src="https://img.shields.io/badge/redis-ff4438?style=for-the-badge&logo=redis&logoColor=white">
