@@ -1,5 +1,6 @@
 package org.portfolio.ourverse.common.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.portfolio.ourverse.common.constant.BaseResult;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,19 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    }
+
+    /*
+    jwt 토큰 만료
+     */
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<BaseResult> ExpiredJwtExceptionHandle(){
+        var result = BaseResult.builder()
+                .status(HttpStatus.UNAUTHORIZED)
+                .message("토큰이 만료됐습니다. 다시 로그인해주세요.")
+                .build();
+
+        return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.portfolio.ourverse.common.exceptions.BaseException;
 import org.portfolio.ourverse.common.exceptions.ExceptionCode;
 import org.portfolio.ourverse.src.model.CommentDTO;
+import org.portfolio.ourverse.src.model.CommentOrderCondition;
 import org.portfolio.ourverse.src.model.CommentPostDTO;
 import org.portfolio.ourverse.src.model.UserVO;
 import org.portfolio.ourverse.src.persist.CommentRepository;
@@ -12,9 +13,6 @@ import org.portfolio.ourverse.src.persist.UserRepository;
 import org.portfolio.ourverse.src.persist.entity.Comment;
 import org.portfolio.ourverse.src.persist.entity.Feed;
 import org.portfolio.ourverse.src.persist.entity.User;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,16 +59,11 @@ public class CommentService {
     }
 
     /*
-        현재 게시글 댓글 조회하기. (최신순)
+        현재 게시글 댓글 조회하기. (페이징 + 좋아요 순, 최신 순 기준으로 동적 정렬해서 리턴)
      */
-    public List<CommentDTO> getComments(Long feedId, int pageNo, int pageSize) {
-
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-
-        return commentRepository.findAllByFeed_Id(feedId, pageable).stream()
-                .map(CommentDTO::from)
-                .toList();
-
+    public List<CommentDTO> getComments(Long feedId, int pageNo, int pageSize, CommentOrderCondition commentOrderCondition) {
+        return commentRepository.findAllByFeed_IdWithCriteria(feedId, pageNo, pageSize, commentOrderCondition)
+                .stream().map(CommentDTO::from).toList();
     }
 
     /*

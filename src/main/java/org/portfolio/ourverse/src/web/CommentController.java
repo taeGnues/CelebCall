@@ -3,6 +3,7 @@ package org.portfolio.ourverse.src.web;
 import lombok.RequiredArgsConstructor;
 import org.portfolio.ourverse.src.model.CommentDTO;
 import org.portfolio.ourverse.src.model.CommentPostDTO;
+import org.portfolio.ourverse.src.model.CommentOrderCondition;
 import org.portfolio.ourverse.src.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +30,8 @@ public class CommentController {
 
     // 1. 특정 게시물 댓글 가져오기 - 최신순
     @GetMapping("/{feedId}")
-    public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long feedId, @RequestParam int pageNo, @RequestParam int pageSize) {
-
-        var res = commentService.getComments(feedId, pageNo, pageSize);
-
+    public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long feedId, @RequestParam int pageNo, @RequestParam int pageSize, @RequestBody CommentOrderCondition commentOrderCondition) {
+        var res = commentService.getComments(feedId, pageNo, pageSize, commentOrderCondition);
         return ResponseEntity.ok(res);
     }
 
