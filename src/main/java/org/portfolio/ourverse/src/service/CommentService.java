@@ -7,6 +7,7 @@ import org.portfolio.ourverse.src.model.CommentDTO;
 import org.portfolio.ourverse.src.model.CommentOrderCondition;
 import org.portfolio.ourverse.src.model.CommentPostDTO;
 import org.portfolio.ourverse.src.model.UserVO;
+import org.portfolio.ourverse.src.persist.CommentLikeRepository;
 import org.portfolio.ourverse.src.persist.CommentRepository;
 import org.portfolio.ourverse.src.persist.FeedRepository;
 import org.portfolio.ourverse.src.persist.UserRepository;
@@ -25,6 +26,7 @@ public class CommentService {
 
     private final AuthService authService;
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final FeedRepository feedRepository;
     private final UserRepository userRepository;
 
@@ -54,6 +56,7 @@ public class CommentService {
         // 4. comment 생성 및 저장.
         Comment comment = Comment.of(form, feed, user);
         commentRepository.save(comment);
+        feed.plusCommentCnt();
 
         return comment.getId();
     }
@@ -72,7 +75,10 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId) {
         Comment comment = checkAuthorityAndGetComment(commentId);
+        comment.getFeed().minusCommentCnt();
 
+        // 해당 댓글에 등록된 좋아요 모두 삭제하기.
+        commentLikeRepository.deleteAllByComment(comment);
         commentRepository.delete(comment);
     }
 

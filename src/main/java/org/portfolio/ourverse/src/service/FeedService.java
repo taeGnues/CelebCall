@@ -4,17 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.portfolio.ourverse.common.constant.GroupName;
 import org.portfolio.ourverse.common.exceptions.BaseException;
 import org.portfolio.ourverse.common.exceptions.ExceptionCode;
-import org.portfolio.ourverse.src.model.FeedDTO;
-import org.portfolio.ourverse.src.model.FeedDetailDTO;
-import org.portfolio.ourverse.src.model.FeedPostDetailDTO;
-import org.portfolio.ourverse.src.model.UserVO;
-import org.portfolio.ourverse.src.persist.FeedRepository;
-import org.portfolio.ourverse.src.persist.UserRepository;
+import org.portfolio.ourverse.src.model.*;
+import org.portfolio.ourverse.src.persist.*;
+import org.portfolio.ourverse.src.persist.entity.Comment;
 import org.portfolio.ourverse.src.persist.entity.Feed;
 import org.portfolio.ourverse.src.persist.entity.User;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -28,6 +22,9 @@ public class FeedService {
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
     private final AuthService authService;
+    private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
+    private final FeedLikeRepository feedLikeRepository;
 
     /*
     게시판에 글 작성.
@@ -78,29 +75,12 @@ public class FeedService {
 
         throw new BaseException(ExceptionCode.WRONG_ACCESS_AUTHORITY);
     }
-
     /*
-    게시판 목록 조회 (최신순)
+    게시판 목록 조회 (동적 정렬, 최신순-좋아요순-댓글수순)
      */
-    public List<FeedDTO> readFeedAllByRecent(GroupName groupName, int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return feedRepository.findAllByGroupName(groupName, pageable).stream().map(FeedDTO::fromEntity).toList();
-    }
-
-    /*
-    게시판 목록 조회 (좋아요순)
-     */
-    public List<FeedDTO> readFeedAllByLikeCnt(GroupName groupName, int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "feedLikeCnt"));
-        return feedRepository.findAllByGroupName(groupName, pageable).stream().map(FeedDTO::fromEntity).toList();
-    }
-
-    /*
-    게시판 목록 조회 (댓글순)
-     */
-    public List<FeedDTO> readFeedAllByCommentCnt(GroupName groupName, int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "commentCnt"));
-        return feedRepository.findAllByGroupName(groupName, pageable).stream().map(FeedDTO::fromEntity).toList();
+    public List<FeedDTO> readFeedAllByCrtieria(GroupName groupName, int pageNo, int pageSize, FeedOrderCondition feedOrderCondition) {
+        return feedRepository.findAllByGroupNameWithCriteria(groupName, pageNo, pageSize, feedOrderCondition)
+                .stream().map(FeedDTO::fromEntity).toList();
     }
 
     /*
@@ -115,7 +95,21 @@ public class FeedService {
             throw new BaseException(ExceptionCode.WRONG_ACCESS_AUTHORITY);
         }
 
-        feedRepository.deleteById(id);
+        // 0. 게시글에 해당하는 좋아요 삭제
+        feedLikeRepository.deleteAllByFeed(feed);
+
+        // 1. 게시글의 댓글 찾기
+        List<Comment> comments = commentRepository.findAllByFeed(feed);
+
+        // 2. 게시글의 각 댓글에 해당하는 좋아요 찾아서 삭제.
+        for (Comment comment : comments) {
+            commentLikeRepository.deleteAllByComment(comment);
+        }
+
+        // 3. 게시글의 댓글 삭제
+        commentRepository.deleteAllByFeed(feed);
+
+        feedRepository.delete(feed);
     }
 
     /*

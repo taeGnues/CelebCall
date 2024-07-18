@@ -8,6 +8,7 @@ import org.portfolio.ourverse.common.exceptions.BaseException;
 import org.portfolio.ourverse.common.exceptions.ExceptionCode;
 import org.portfolio.ourverse.src.model.FeedDTO;
 import org.portfolio.ourverse.src.model.FeedDetailDTO;
+import org.portfolio.ourverse.src.model.FeedOrderCondition;
 import org.portfolio.ourverse.src.model.FeedPostDetailDTO;
 import org.portfolio.ourverse.src.service.FeedService;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +41,12 @@ public class FeedController {
     }
 
 
-    // 3. 그룹의 게시글 목록 조회 (최신순, 페이징처리)
-    // 3-1. 그룹 게시글의 최신순 정렬
-    @GetMapping("/criteria-recent")
-    public ResponseEntity<List<FeedDTO>> readAllFeedsByRecent(String groupname, int pageNo, int pageSize){
+    // 3. 그룹의 게시글 목록 조회 (최신순-좋아요순-댓글수순 동적 정렬 & 페이징처리)
+    @GetMapping
+    public ResponseEntity<List<FeedDTO>> readAllFeedsByRecent(@RequestParam String groupname,
+                                                              @RequestParam int pageNo,
+                                                              @RequestParam int pageSize,
+                                                              @RequestBody FeedOrderCondition feedOrderCondition){
         GroupName groupName;
         try{
              groupName = GroupName.valueOf(groupname);
@@ -51,35 +54,9 @@ public class FeedController {
             throw new BaseException(ExceptionCode.WRONG_GROUPNAME);
         }
 
-        return ResponseEntity.ok(feedService.readFeedAllByRecent(groupName, pageNo, pageSize));
+        return ResponseEntity.ok(feedService.readFeedAllByCrtieria(groupName, pageNo, pageSize, feedOrderCondition));
     }
 
-    // 3-2. 그룹 게시글의 좋아요 순 정렬
-    @GetMapping("/criteria-like")
-    public ResponseEntity<List<FeedDTO>> readAllFeedsByLikeCnt(String groupname, int pageNo, int pageSize){
-        GroupName groupName;
-        try{
-            groupName = GroupName.valueOf(groupname);
-        }catch (IllegalArgumentException e){
-            throw new BaseException(ExceptionCode.WRONG_GROUPNAME);
-        }
-
-        return ResponseEntity.ok(feedService.readFeedAllByLikeCnt(groupName, pageNo, pageSize));
-    }
-
-
-    // 3-3. 그룹 게시글의 댓글 순 정렬
-    @GetMapping("/criteria-comment")
-    public ResponseEntity<List<FeedDTO>> readAllFeedsByCommentCnt(String groupname, int pageNo, int pageSize){
-        GroupName groupName;
-        try{
-            groupName = GroupName.valueOf(groupname);
-        }catch (IllegalArgumentException e){
-            throw new BaseException(ExceptionCode.WRONG_GROUPNAME);
-        }
-
-        return ResponseEntity.ok(feedService.readFeedAllByCommentCnt(groupName, pageNo, pageSize));
-    }
 
 
     // 4. 그룹의 게시글 삭제 기능
