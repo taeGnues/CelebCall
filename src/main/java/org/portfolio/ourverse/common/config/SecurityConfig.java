@@ -40,6 +40,9 @@ public class SecurityConfig {
                                 .requestMatchers("/v3/**", "/swagger-ui/**").permitAll() // swagger 설정
                                 .requestMatchers("/feed/**").hasAnyRole("FAN", "ARTIST")
                                 .requestMatchers("/group/**").hasAnyRole("FAN", "ARTIST")
+                                .requestMatchers("/comment/**").hasAnyRole("FAN", "ARTIST")
+                                .requestMatchers("/feed-like/**").hasAnyRole("FAN", "ARTIST")
+                                .requestMatchers("/comment-like/**").hasAnyRole("FAN", "ARTIST")
                                 .anyRequest().denyAll()
                 ).addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

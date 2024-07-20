@@ -51,4 +51,19 @@ public class Feed extends BaseEntity{
                 .build();
     }
 
+    public void plusFeedLikeCnt() {
+        this.feedLikeCnt++;
+    }
+
+    public void minusFeedLikeCnt() {
+        this.feedLikeCnt--;
+    }
+
+    public void plusCommentCnt() {
+        this.commentCnt++;
+    }
+
+    public void minusCommentCnt() {
+        this.commentCnt--;
+    }
 }

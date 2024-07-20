@@ -51,6 +51,45 @@ select u.id, u.username, u.email from user u where u.user_id = f.user_id -- (2)
 
 https://velog.io/@j3beom/JPA-%ED%94%84%EB%A1%9D%EC%8B%9CProxy-%EA%B8%B0%EB%B3%B8
 
+## QueryDSL 초기 설정하기
+### Trouble
+- querydsl의 설정은 다음과 같은 방식으로 진행한다.
+https://blog.naver.com/innogrid/222725730056
+
+- 구조 잡기
+https://velog.io/@soyeon207/QueryDSL-Spring-Boot-%EC%97%90%EC%84%9C-QueryDSL-JPA-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
+
+- querydsl 사용이유
+http://ssow93.tistory.com/69
+
+- 오류 발생 시 :
+https://lahezy.tistory.com/94
+
+- 동적 정렬하기 : https://dingdingmin-back-end-developer.tistory.com/entry/Springboot-JPA-Querydsl-%EB%8F%99%EC%A0%81-%EC%A0%95%EB%A0%AC-OrderSpecifier
+
+## PathVariable 설정 문제 (build and run - intellij로 설정 시)
+### Trouble
+querydsl를 사용하기 위해 기존 gradle 대신 intellij를 사용했다. 이때, 
+```java
+    @PatchMapping("/{groupname}")
+    public ResponseEntity<String> updateGroupName(@PathVariable String groupname) {
+        log.info("Updating group name {}", groupname);
+        try{
+            authService.updateGroupName(GroupName.valueOf(groupname));
+        }catch (IllegalArgumentException e){
+            throw new BaseException(ExceptionCode.WRONG_GROUPNAME);
+        }
+        return ResponseEntity.ok("그룹 가입에 성공하셨습니다.");
+    }
+```
+위와 같이 patchvariable를 사용해도 적용이 안된다!
+
+### Solution
+
+
+설정 변경 적용을 위한 out 폴더 삭제 : https://sehyeona.tistory.com/32
+
+
 ## N+1 문제점 
 처음 프로젝트 설계시 게시판 글 조회 시 댓글 목록도 함께 조회를 하고자 하였습니다. 그러자 한번 게시글 조회시 해당 게시글에 작성된 모든 댓글들도 함께 조회가 되었습니다.
 그리고 이 부분들이 한번에 조회된 것이 아닌, 
@@ -63,3 +102,12 @@ https://velog.io/@j3beom/JPA-%ED%94%84%EB%A1%9D%EC%8B%9CProxy-%EA%B8%B0%EB%B3%B8
 
 2. API 분리
 ...
+
+
+궁금증 : 게시글 조회시 댓글도 함께 가져오는게 좋을까?
+댓글 가져오는 API, 게시글 가져오는 API 분리하는게 좋지 않을까?
+
+cascade로 게시글-댓글-댓글좋아요을 묶는게 바람직할까?
+게시글의 삭제는 댓글, 댓글 좋아요 삭제로 생명주기가 묶이지만
+댓글 삭제는 게시글의 삭제 이전에도 이루어질 수 있고,
+댓글 좋아요 삭제 역시 댓글, 게시글의 삭제 이전에도 이뤄질 수 있다.
